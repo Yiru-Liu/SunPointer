@@ -82,10 +82,15 @@ void printlnDateTime(DateTime dt) {
   Serial.println('Z');
 }
 
+void printDegrees(float64_t valRadians) {
+  printFloat64(fp64_mul(valRadians, F64_RAD_TO_DEG));
+  Serial.print(" deg");
+}
+
 void printlnEarthCoords(EarthCoords ec) {
-  printFloat64(fp64_mul(ec.lat, F64_RAD_TO_DEG));
+  printDegrees(ec.lat);
   Serial.print(",");
-  printFloat64(fp64_mul(ec.lon, F64_RAD_TO_DEG));
+  printDegrees(ec.lon);
   Serial.println();
 }
 
@@ -198,7 +203,13 @@ ClockParams calculateLhaAndAltitude(CelestialCoords coords, float64_t gast,
   EarthCoords loc) {
   float64_t gast_radians = fp64_mul(gast, F64_H_TO_RAD);
   // float lha = (gast_radians - coords.ra) + loc.lon;
-  float64_t lha = fp64_add(fp64_sub(gast_radians, coords.ra), loc.lon);
+  float64_t lha = fp64_fmod(
+    fp64_add(
+      fp64_add(fp64_sub(gast_radians, coords.ra), loc.lon), 
+      float64_NUMBER_2PI
+    ),
+    float64_NUMBER_2PI
+  );
   // float alt = asin(cos(lha) * cos(coords.dec) * cos(loc.lat) + sin(coords.dec) * sin(loc.lat));
   float64_t alt = fp64_asin(
     fp64_add(
@@ -234,8 +245,9 @@ void setup() {
   Serial.print("Location: ");
   printlnEarthCoords(location);
 
-  printlnFloat64(p.lha);
-  printlnFloat64(p.alt);
+  printDegrees(p.lha);
+  Serial.println();
+  printDegrees(p.alt);
 }
 
 void loop() {
