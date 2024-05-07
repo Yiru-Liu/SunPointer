@@ -65,7 +65,7 @@ void print2Digit(byte val) {
   Serial.print(char2);
 }
 
-void printDateTime(DateTime dt) {
+void printlnDateTime(DateTime dt) {
   Serial.print(dt.year);
   Serial.print('-');
   print2Digit(dt.month);
@@ -82,7 +82,7 @@ void printDateTime(DateTime dt) {
   Serial.println('Z');
 }
 
-void printEarthCoords(EarthCoords ec) {
+void printlnEarthCoords(EarthCoords ec) {
   printFloat64(fp64_mul(ec.lat, F64_RAD_TO_DEG));
   Serial.print(",");
   printFloat64(fp64_mul(ec.lon, F64_RAD_TO_DEG));
@@ -230,9 +230,9 @@ void setup() {
   ClockParams p = getClockParams(location, currentDt);
 
   Serial.print("Datetime: ");
-  printDateTime(currentDt);
+  printlnDateTime(currentDt);
   Serial.print("Location: ");
-  printEarthCoords(location);
+  printlnEarthCoords(location);
 
   printlnFloat64(p.lha);
   printlnFloat64(p.alt);
